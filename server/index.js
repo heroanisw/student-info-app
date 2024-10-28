@@ -24,6 +24,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// 루트 경로에 대한 응답 정의
+app.get('/', (req, res) => {
+    res.send('학생 정보 관리 API에 오신 것을 환영합니다.');
+});
+
 // 학생 모델 정의
 const StudentSchema = new mongoose.Schema({
     name: { type: String, required: true },
