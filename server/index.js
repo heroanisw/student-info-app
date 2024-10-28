@@ -9,15 +9,9 @@ const mongoURI = process.env.MONGODB_URI;
 mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-});
-
-// 연결이 성공하면 메시지를 표시합니다.
-mongoose.connection.on('connected', () => {
+}).then(() => {
     console.log('MongoDB에 성공적으로 연결되었습니다.');
-});
-
-// 연결이 실패하면 오류 메시지를 표시합니다.
-mongoose.connection.on('error', (err) => {
+}).catch((err) => {
     console.log('MongoDB 연결 오류:', err);
 });
 
@@ -31,28 +25,38 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // 학생 모델 정의
-const Student = mongoose.model('Student', new mongoose.Schema({
-    name: String,
-    age: Number,
-    grade: String,
-}));
+const StudentSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    age: { type: Number, required: true },
+    grade: { type: String, required: true },
+});
+
+const Student = mongoose.model('Student', StudentSchema);
 
 // 학생 정보 추가 API
 app.post('/students', async (req, res) => {
-    const { name, age, grade } = req.body;
-    const newStudent = new Student({ name, age, grade });
-    await newStudent.save(); // MongoDB에 저장
-    res.send(newStudent);
+    try {
+        const { name, age, grade } = req.body;
+        const newStudent = new Student({ name, age, grade });
+        await newStudent.save(); // MongoDB에 저장
+        res.status(201).send(newStudent);
+    } catch (error) {
+        res.status(500).send({ error: '학생 정보를 저장하는 중 오류가 발생했습니다.' });
+    }
 });
 
 // 학생 정보 검색 API
 app.get('/students', async (req, res) => {
-    const { name, grade } = req.query;
-    const filter = {};
-    if (name) filter.name = new RegExp(name, 'i'); // 이름 검색
-    if (grade) filter.grade = grade; // 학년 검색
-    const students = await Student.find(filter);
-    res.send(students);
+    try {
+        const { name, grade } = req.query;
+        const filter = {};
+        if (name) filter.name = new RegExp(name, 'i'); // 이름 검색
+        if (grade) filter.grade = grade; // 학년 검색
+        const students = await Student.find(filter);
+        res.send(students);
+    } catch (error) {
+        res.status(500).send({ error: '학생 정보를 검색하는 중 오류가 발생했습니다.' });
+    }
 });
 
 // 서버 실행
