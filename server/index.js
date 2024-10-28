@@ -2,8 +2,11 @@
 
 const mongoose = require('mongoose');
 
+// MongoDB Atlas 연결 URI를 환경 변수에서 가져오기
+const mongoURI = process.env.MONGODB_URI;
+
 // MongoDB에 연결합니다.
-mongoose.connect('mongodb://localhost:27017/studentDB', {
+mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
@@ -53,6 +56,7 @@ app.get('/students', async (req, res) => {
 });
 
 // 서버 실행
-app.listen(3001, () => {
-    console.log('Server running on port 3001');
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
