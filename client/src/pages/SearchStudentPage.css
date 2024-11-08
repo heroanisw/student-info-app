@@ -1,0 +1,31 @@
+/* src/pages/SearchStudentPage.css */
+.search-student-container {
+    /* 'container' 클래스에서 기본 스타일은 상속받고, 추가적인 스타일만 여기에 기입 */
+    background-color: #fafafa; /* 특정 페이지의 배경색 설정 */
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    width: 300px;
+}
+
+.student-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.student-list th, .student-list td {
+    padding: 15px;
+    text-align: center;
+}
+
+.student-list tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
